@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Wi-Fi Screen Cast</string>
+    <string name="splash_name">Priyanshi Srivastava</string>
+    <string name="screen_title">Wi-Fi Screen Cast</string>
+
+    <string name="button_start">Start Screen Cast</string>
+    <string name="button_stop">Stop Cast</string>
+
+    <string name="status_label">Casting Status:</string>
+    <string name="status_ready">Ready to Cast</string>
+    <string name="status_casting">Casting Active</string>
+
+    <string name="url_label">Stream URL:</string>
+
+    <string name="url_placeholder">rtsp://[IP_ADDRESS]:8554/screen</string>
+
+    <string name="ip_label">Local IP Address:</string>
+    <string name="ip_placeholder">Finding...</string>
+    <string name="notification_channel_name">Screen Casting Service</string>
+
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+
+        <item name="colorPrimary">#009688</item>
+        <item name="colorPrimaryDark">#00796B</item>
+        <item name="colorAccent">#FFC107</item>
+    </style>
+</resources>
