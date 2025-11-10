@@ -20,7 +20,6 @@ import java.util.Random
 
 class ScreenCastService : Service() {
 
-    // Properties (nullable/lateinit for service components)
     private lateinit var mediaProjectionManager: MediaProjectionManager
     private var mediaProjection: MediaProjection? = null
     private var screenCastServer: ScreenCastServer? = null
@@ -36,7 +35,7 @@ class ScreenCastService : Service() {
 
         when (action) {
             ACTION_START -> {
-                // Start logic (only executed once)
+                // Start logic
                 if (screenCastServer == null) {
                     val resultCode = intent.getIntExtra(EXTRA_RESULT_CODE, Activity.RESULT_CANCELED)
                     val data = getDataIntentFromServiceIntent(intent)
@@ -49,7 +48,7 @@ class ScreenCastService : Service() {
                     }
 
                     // 1. Start as Foreground Service
-                    // The foreground service type is dynamically determined in getForegroundServiceType()
+
                     startForeground(NOTIFICATION_ID, createNotification(), getServiceType())
 
                     // 2. Get MediaProjection instance
@@ -74,15 +73,12 @@ class ScreenCastService : Service() {
         return START_STICKY
     }
 
-    /**
-     * Handles the modern way of retrieving Parcelable Intent (data) from the service intent,
-     * safely supporting older API levels.
-     */
+
     private fun getDataIntentFromServiceIntent(intent: Intent): Intent? {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getParcelableExtra(EXTRA_RESULT_INTENT, Intent::class.java)
         } else {
-            // Deprecated method for older APIs
+
             @Suppress("DEPRECATION")
             intent.getParcelableExtra(EXTRA_RESULT_INTENT)
         }
@@ -109,7 +105,7 @@ class ScreenCastService : Service() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             stopForeground(STOP_FOREGROUND_DETACH)
         } else {
-            // STOP_FOREGROUND_DETACH behavior approximated for older APIs
+
             @Suppress("DEPRECATION")
             stopForeground(false)
         }
@@ -128,7 +124,7 @@ class ScreenCastService : Service() {
     }
 
     private fun createNotification(): Notification {
-        // Intent to open the MainActivity when the notification is clicked
+
         val notificationIntent = Intent(this, MainActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(
             this, 0, notificationIntent,
@@ -150,7 +146,7 @@ class ScreenCastService : Service() {
     }
 
     private fun getStopPendingIntent(): PendingIntent {
-        // Intent to send ACTION_STOP command to this service
+
         val stopIntent = Intent(this, ScreenCastService::class.java).apply {
             action = ACTION_STOP
         }
