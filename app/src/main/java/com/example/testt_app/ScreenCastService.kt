@@ -1,4 +1,4 @@
-package com.example.test_app
+package com.example.testt_app
 
 import android.app.Activity
 import android.app.Notification
@@ -16,7 +16,6 @@ import android.os.IBinder
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
-import com.example.testt_app.R
 import java.util.Random
 
 class ScreenCastService : Service() {
@@ -50,7 +49,8 @@ class ScreenCastService : Service() {
                     }
 
                     // 1. Start as Foreground Service
-                    startForeground(NOTIFICATION_ID, createNotification(), getForegroundServiceType())
+                    // The foreground service type is dynamically determined in getForegroundServiceType()
+                    startForeground(NOTIFICATION_ID, createNotification(), getServiceType())
 
                     // 2. Get MediaProjection instance
                     mediaProjection = mediaProjectionManager.getMediaProjection(resultCode, data)
@@ -94,10 +94,10 @@ class ScreenCastService : Service() {
     }
 
     override fun onBind(intent: Intent): IBinder? {
-        return null // Not a bound service
+        return null
     }
 
-    // --- Private Methods ---
+
 
     private fun stopCasting() {
         screenCastServer?.stop()
@@ -106,7 +106,6 @@ class ScreenCastService : Service() {
         mediaProjection?.stop()
         mediaProjection = null
 
-        // Ensure the foreground service is correctly stopped
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             stopForeground(STOP_FOREGROUND_DETACH)
         } else {
@@ -120,7 +119,7 @@ class ScreenCastService : Service() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 CHANNEL_ID,
-                getString(R.string.notification_channel_name), // Assuming this exists in R.string
+                getString(R.string.notification_channel_name),
                 NotificationManager.IMPORTANCE_LOW
             )
             val manager = getSystemService(NotificationManager::class.java)
@@ -138,7 +137,7 @@ class ScreenCastService : Service() {
 
         // Build the notification
         return NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("${getString(R.string.app_name)} Active") // Assuming R.string.app_name exists
+            .setContentTitle("${getString(R.string.app_name)} Active")
             .setContentText("Your screen is being cast. Tap to stop.")
             .setSmallIcon(android.R.drawable.ic_menu_rotate)
             .setContentIntent(pendingIntent)
@@ -160,6 +159,14 @@ class ScreenCastService : Service() {
             this, Random().nextInt(), stopIntent,
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
+    }
+
+    private fun getServiceType(): Int {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROJECTION
+        } else {
+            0
+        }
     }
 
     companion object {
